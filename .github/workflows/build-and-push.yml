@@ -13,6 +13,7 @@ jobs:
     - name: Build and push Docker images
       run: |
         cd OracleDatabase/SingleInstance/dockerfiles
-        ./buildDockerImage.sh -v 18.4.0 -x -o -t jlundy/oracle-db:18.4.0-xe
+        ./buildDockerImage.sh -v 18.4.0 -x
+        docker tag oracle/database:18.4.0-xe jlundy/oracle-db:18.4.0-xe
         docker login -u ${{ secrets.DOCKERHUB_USERNAME}} -p ${{ secrets.DOCKERHUB_PASSWORD }}
         docker push jlundy/oracle-db:18.4.0-xe
