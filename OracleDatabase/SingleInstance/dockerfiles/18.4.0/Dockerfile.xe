@@ -76,6 +76,8 @@ RUN chmod ug+x $INSTALL_DIR/*.sh && \
     rm -rf $INSTALL_DIR && \
     chmod ug+x $ORACLE_BASE/*.sh
 
+VOLUME $ORACLE_BASE/oradata
+
 HEALTHCHECK --interval=1m --start-period=5m \
    CMD "$ORACLE_BASE/$CHECK_DB_FILE" >/dev/null || exit 1
 
