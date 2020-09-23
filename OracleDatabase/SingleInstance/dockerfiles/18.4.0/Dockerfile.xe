@@ -75,8 +75,6 @@ RUN chmod ug+x $INSTALL_DIR/*.sh && \
     cd $HOME && \
     rm -rf $INSTALL_DIR && \
     chmod ug+x $ORACLE_BASE/*.sh
-    
-USER oracle:oinstall
 
 VOLUME $ORACLE_BASE/oradata
 
