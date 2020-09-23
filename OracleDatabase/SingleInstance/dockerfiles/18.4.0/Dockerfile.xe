@@ -53,23 +53,28 @@ RUN sync && \
     rm -rf /var/cache/yum && \
     rm -rf /var/tmp/yum-*
 
-USER oracle:oinstall
 
 # Use second ENV so that variable get substituted
 ENV PATH=$ORACLE_HOME/bin:$PATH
+
+USER oracle:oinstall
 
 # Copy binaries
 # -------------
 COPY $CHECK_SPACE_FILE $RUN_FILE $PWD_FILE $CHECK_DB_FILE $CONF_FILE $INSTALL_DIR/
 
+USER root
+
 RUN chmod ug+x $INSTALL_DIR/*.sh && \
-    $INSTALL_DIR/$CHECK_SPACE_FILE && \
-    cd $INSTALL_DIR && \
+    $INSTALL_DIR/$CHECK_SPACE_FILE
+   
+USER oracle:oinstall
+    
+RUN cd $INSTALL_DIR && \
     mkdir -p $ORACLE_BASE/scripts/setup && \
     mkdir $ORACLE_BASE/scripts/startup && \
     ln -s $ORACLE_BASE/scripts /docker-entrypoint-initdb.d && \
     mkdir -p $ORACLE_BASE/oradata /home/oracle && \
-    chown -R oracle:oinstall $ORACLE_BASE /home/oracle && \
     mv $INSTALL_DIR/$RUN_FILE $ORACLE_BASE/ && \
     mv $INSTALL_DIR/$PWD_FILE $ORACLE_BASE/ && \
     mv $INSTALL_DIR/$CHECK_DB_FILE $ORACLE_BASE/ && \
