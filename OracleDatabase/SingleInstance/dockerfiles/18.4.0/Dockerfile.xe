@@ -33,6 +33,8 @@ LABEL "provider"="Oracle"                                               \
       "port.oemexpress"="5500"                                          \
       "port.apex"="8080"
 
+USER oracle:oinstall
+
 # Environment variables required for this build (do NOT change)
 # -------------------------------------------------------------
 ENV ORACLE_BASE=/opt/oracle \
