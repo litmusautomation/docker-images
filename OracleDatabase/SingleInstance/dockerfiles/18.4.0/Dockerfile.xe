@@ -51,7 +51,7 @@ RUN sync && \
     yum -y install openssl oracle-database-preinstall-18c && \
     yum -y localinstall $INSTALL_FILE_1 && \
     rm -rf /var/cache/yum && \
-    rm -rf /var/tmp/yum-* && \
+    rm -rf /var/tmp/yum-*
 
 USER oracle:oinstall
 
