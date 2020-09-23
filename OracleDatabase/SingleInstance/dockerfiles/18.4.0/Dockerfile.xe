@@ -47,30 +47,21 @@ ENV ORACLE_BASE=/opt/oracle \
     INSTALL_DIR="$HOME/install" \
     ORACLE_DOCKER_INSTALL="true"
 
-RUN sync && \
-    yum -y install openssl oracle-database-preinstall-18c && \
-    yum -y localinstall $INSTALL_FILE_1 && \
-    rm -rf /var/cache/yum && \
-    rm -rf /var/tmp/yum-*
-
-
 # Use second ENV so that variable get substituted
 ENV PATH=$ORACLE_HOME/bin:$PATH
-
-USER oracle:oinstall
 
 # Copy binaries
 # -------------
 COPY $CHECK_SPACE_FILE $RUN_FILE $PWD_FILE $CHECK_DB_FILE $CONF_FILE $INSTALL_DIR/
 
-USER root
-
 RUN chmod ug+x $INSTALL_DIR/*.sh && \
-    $INSTALL_DIR/$CHECK_SPACE_FILE
-   
-USER oracle:oinstall
-    
-RUN cd $INSTALL_DIR && \
+    sync && \
+    $INSTALL_DIR/$CHECK_SPACE_FILE && \
+    cd $INSTALL_DIR && \
+    yum -y install openssl oracle-database-preinstall-18c && \
+    yum -y localinstall $INSTALL_FILE_1 && \
+    rm -rf /var/cache/yum && \
+    rm -rf /var/tmp/yum-* && \
     mkdir -p $ORACLE_BASE/scripts/setup && \
     mkdir $ORACLE_BASE/scripts/startup && \
     ln -s $ORACLE_BASE/scripts /docker-entrypoint-initdb.d && \
@@ -79,6 +70,7 @@ RUN cd $INSTALL_DIR && \
     mv $INSTALL_DIR/$PWD_FILE $ORACLE_BASE/ && \
     mv $INSTALL_DIR/$CHECK_DB_FILE $ORACLE_BASE/ && \
     mv $INSTALL_DIR/$CONF_FILE /etc/sysconfig/ && \
+    chown -R oracle:oinstall $ORACLE_BASE /home/oracle && \
     ln -s $ORACLE_BASE/$PWD_FILE / && \
     cd $HOME && \
     rm -rf $INSTALL_DIR && \
